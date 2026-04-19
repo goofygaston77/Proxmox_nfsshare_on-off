@@ -1,5 +1,10 @@
-# For PBS NAS Sync (:
-# example: NAS is online from 01:00 to 04:00
+# Example window: NAS is online from 01:00 to 04:00
+#
+# IMPORTANT:
+# - Add pbs-nas-sync.sh entries to the crontab on the PBS host.
+# - Add nas-pve-toggle.sh entries to the crontab on the PVE host.
+
+# PBS host crontab (pbs-nas-sync.sh)
 # activate at 01:15
 15 1 * * * /usr/local/bin/pbs-nas-sync.sh start
 
@@ -7,7 +12,7 @@
 45 3 * * * /usr/local/bin/pbs-nas-sync.sh stop
 
 
-# For PVE Storage-Enable/Disable (:
+# PVE host crontab (nas-pve-toggle.sh)
 # 1. Shortly after the NAS has started (e.g., 01:05)
 05 1 * * * /usr/local/bin/nas-pve-toggle.sh start
 
