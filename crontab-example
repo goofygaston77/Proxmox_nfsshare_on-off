@@ -1,0 +1,17 @@
+# For PBS NAS Sync (:
+# example: NAS is online from 01:00 to 04:00
+# activate at 01:15
+15 1 * * * /usr/local/bin/pbs-nas-sync.sh start
+
+# deactivate at 03:45
+45 3 * * * /usr/local/bin/pbs-nas-sync.sh stop
+
+
+# For PVE Storage-Enable/Disable (:
+# 1. Shortly after the NAS has started (e.g., 01:05)
+05 1 * * * /usr/local/bin/nas-pve-toggle.sh start
+
+# ... Here your PVE backups run on the NAS ...
+
+# 2. Shortly before the NAS goes offline again (e.g., 03:55)
+55 3 * * * /usr/local/bin/nas-pve-toggle.sh stop
