@@ -1,33 +1,30 @@
 #!/bin/bash
 
-# Variables
-STORAGE_ID="synology_pbs_backup"
-MOUNT_PATH="/mnt/pve/synology_pbs_backup"
+# Set PATH for the PVE environment (critical for cron)
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# IDs of your storages (check these in Datacenter -> Storage)
+PBS_STORAGE_ID="backup-synology-nfs" 
+NFS_STORAGE_ID="synology_pbs_backup"
 
 case "$1" in
     start)
-        echo "Activating $STORAGE_ID..."
-        # Set storage in Proxmox back to 'active'
-        pvesm set $STORAGE_ID --disable 0
-        
-        # As a precaution, check if the mount exists
-        if mountpoint -q $MOUNT_PATH; then
-            echo "Storage is online and ready."
-        else
-            echo "Storage activated, mount will follow automatically."
-        fi
+        echo "$(date): Enabling storages on PVE..."
+        # Enable storages
+        pvesm set $PBS_STORAGE_ID --disable 0
+        pvesm set $NFS_STORAGE_ID --disable 0
         ;;
     stop)
-        echo "Deactivating $STORAGE_ID..."
-        # Deactivate storage in Proxmox (stops status queries)
-        pvesm set $STORAGE_ID --disable 1
+        echo "$(date): Disabling storages on PVE..."
+        # Disable storages (stops pvestatd polling)
+        pvesm set $PBS_STORAGE_ID --disable 1
+        pvesm set $NFS_STORAGE_ID --disable 1
         
-        # Brief pause for the system
+        # Wait 2 seconds
         sleep 2
         
-        # Unmount NFS mount 'lazy' to avoid GUI freezes
-        umount -l $MOUNT_PATH 2>/dev/null
-        echo "Storage is now offline."
+        # Unmount NFS share if it is still mounted
+        umount -l /mnt/pve/$NFS_STORAGE_ID 2>/dev/null
         ;;
     *)
         echo "Usage: $0 {start|stop}"

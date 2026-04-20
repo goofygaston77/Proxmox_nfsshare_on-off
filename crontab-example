@@ -3,6 +3,7 @@
 # IMPORTANT:
 # - Add pbs-nas-sync.sh entries to the crontab on the PBS host.
 # - Add nas-pve-toggle.sh entries to the crontab on the PVE host.
+# - Use absolute script paths because cron runs with a minimal PATH.
 
 # PBS host crontab (pbs-nas-sync.sh)
 # activate at 01:15

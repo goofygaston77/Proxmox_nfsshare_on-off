@@ -17,7 +17,7 @@ Small helper scripts to switch NAS-based backup storage on and off on a schedule
 
 Set the IDs/paths inside the scripts to your environment:
 - `pbs_nas_sync.sh`: `DATASTORE_ID`, `MOUNT_POINT`
-- `nas-pve-toggle.sh`: `STORAGE_ID`, `MOUNT_PATH`
+- `nas-pve-toggle.sh`: `PBS_STORAGE_ID`, `NFS_STORAGE_ID`
 
 Also make sure mounts are configured correctly in both systems, with suitable NFS options.
 Do not reuse hardcoded paths from other examples.
@@ -39,8 +39,8 @@ nfs: <PVE_STORAGE_ID>
 
 Mapping must match script variables:
 - `<PBS_MOUNT_POINT>` = `MOUNT_POINT`
-- `<PVE_STORAGE_ID>` = `STORAGE_ID`
-- `<PVE_MOUNT_POINT>` = `MOUNT_PATH`
+- `<PVE_STORAGE_ID>` = `NFS_STORAGE_ID`
+- `<PVE_MOUNT_POINT>` = `/mnt/pve/<NFS_STORAGE_ID>`
 
 ## Install
 
@@ -58,6 +58,11 @@ proxmox-backup-manager datastore list
 ## Cron example
 
 Use the `crontab-example` file as template and adjust times to your NAS online window.
+
+Cron reliability fix (April 2026):
+- Earlier cron runs failed because cron uses a minimal environment.
+- Both scripts now export an explicit `PATH` at the top.
+- Keep absolute script paths in cron entries (for example `/usr/local/bin/pbs-nas-sync.sh`).
 
 Important:
 - Add `pbs-nas-sync.sh` jobs on the PBS host.
